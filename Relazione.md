@@ -24,12 +24,13 @@ Utilizzando il codice presente nel file StartingCode-heightmap.html ho capito co
 
 ### Sviluppo
 Partendo dal cubo iniziale, con texture applicata, ho creato inizialmente un ciclo che clonava l'oggetto e poi lo spostava nella posizione corretta creando così un terreno piatto.
-Sviluppando ulteriormente questa funzione in una funzione chiamata *CreateTerrain(width, height, data)* ho aggiunto i cubi e combinando il risultato fornito da *getHeightData(img)* sull'immagine, ho modificato la loro coordinata y per adattarla al colore del pixel : più chiaro è il pixel più in alto si troverà il cubo. Il risultato di questo processo è il file *Grounds-nolights.html*.
+Sviluppando ulteriormente questa funzione in una funzione chiamata *CreateTerrain(width, height, data)* ho aggiunto i cubi e combinando il risultato fornito da *getHeightData(img)* sull'immagine, ho modificato la loro coordinata y per adattarla al colore del pixel : più chiaro è il pixel più in alto si troverà il cubo.\*
+Il risultato di questo processo è il file *Grounds-nolights.html*.
 
 ![risultato intermedio](img/complete.jpg)
 
 Il risultato del metodo *CreateTerrain(width, height, data)* sembra soddisfacente solo ne caso in cui la differenza di altezza da un cubo a un altro si di una unità e quindi non si generino spazi vuoti.
-Per risolvere questo problema ho modificato il codice di *CreateTerrain* aggiungendo un ciclo che, utilizzando le coordinate di quel punto, generi tutti i cubi fino al piano che ha coordinate **(x, 0, z)**.
+Per risolvere questo problema ho modificato il codice di *CreateTerrain* aggiungendo un ciclo che, utilizzando le coordinate di quel punto, generi tutti i cubi fino al piano che ha coordinate **(x, 0, z)**.\*
 Questi cubi, però, non sono uguali a quelli generati sopra ma bensi sono dei cubi formati solo dalla texture *dirt.jpg*.
 Il risultato di queste modifiche è il file *Grounds-filled.html*.
 Per realizzare questo progetto ho preso spunto da Minecraft poichè offre ottimi spunti per il lavoro con cubi e texture applicabili a essi.
@@ -38,7 +39,10 @@ Per realizzare questo progetto ho preso spunto da Minecraft poichè offre ottimi
 
 ### Osservazioni
 Ho riscontrato che la funzione *getHeightData(img)* non sempre ritorna lo stesso risultatato per tutti i pixels dello stesso colore, come si può vedere nelle due immagine soprastanti, nononstante mi sia accertato che siano esattamente della stessa tonalità.
-Controllando anche le variabili con lo strumento di ispezione di Google Chrome ho potuto notare che nel vettore che contiene le tre componenti dei colori che formano la sfumatura, una risulta diversa dalle altre dello stesso colore, inspiegabilmente. 
+Controllando anche le variabili con lo strumento di ispezione di Google Chrome ho potuto notare che nel vettore che contiene le tre componenti dei colori che formano la sfumatura, una risulta diversa dalle altre dello stesso colore, inspiegabilmente.
+
+####
+\* per i dettagli implementativi si rimanda al codice allegato
 
 ## Parte II : Movimenti di camera e creazione di un video post-procesato
 Autore : Hake Dine
