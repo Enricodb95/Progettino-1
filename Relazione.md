@@ -30,7 +30,7 @@ Sviluppando ulteriormente questa funzione in una funzione chiamata *CreateTerrai
 
 Il risultato del metodo *CreateTerrain(width, height, data)* sembra soddisfacente solo ne caso in cui la differenza di altezza da un cubo a un altro si di una unità e quindi non si generino spazi vuoti.
 Per risolvere questo problema ho modificato il codice di *CreateTerrain* aggiungendo un ciclo che, utilizzando le coordinate di quel punto, generi tutti i cubi fino al piano che ha y=0.
-Questi cubi non sono però uguali a quelli generati sopra ma bensi sono dei cubi formati solo dalla texture *dirt.jpg*.
+Questi cubi, però, non sono uguali a quelli generati sopra ma bensi sono dei cubi formati solo dalla texture *dirt.jpg*.
 Per realizzare questo progetto ho preso spunto dalle texture di Minecraft poichè offre ottimi spunti per il lavoro con cubi e texture applicabili a essi.
 
 ![Risultato finale](textures/complete.jpg)
