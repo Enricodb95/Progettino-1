@@ -37,3 +37,72 @@ Per realizzare questo progetto ho preso spunto dalle texture di Minecraft poich�
 
 ## Parte II : Movimenti di camera e creazione di un video post-procesato
 Autore : Hake Dine
+
+
+### Parte iniziale 
+Dopo aver concluso la parte del "Create Terrain" dovevo fare un "movie" usando i movimenti di camera di three.js, inquadrando sempre il terreno creato dal mio collega. Per fare ciò, ho fatto uso degli attributi position e lookat della varibile camera, che è una Perspective Camera.
+  
+```javascript
+  	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+```
+Per prima cosa, ho salvato il valore del tempo in cui iniziano le animazioni in una variabile chiamata "timestart". Questo è reso possibile dalla funzione "Date.now()". Successivamente ho creato una funzione chiamata "CameraChanges(Date.now())" in cui passo il tempo che scorre, e che ho posizionato nella funzione 
+"Update()" già creata dal proffessor Ranon. In questa funzione userò condizioni "if()" nelle quali userò di nuovo la funzione "Date.now()",che mi da il tempo che sta trascorrendo, alla quale sottraggo la variabile "timestart". In questo modo  posso dettare i tempi di quando cambio i movimenti della camera
+
+```javascript
+	var timestart=Date.now();
+```	
+```javascript	
+	function Update() {
+			requestAnimationFrame( Update );
+			CameraChanges(Date.now());
+			stats.update();
+			Render();
+	}
+```
+```javascript	
+	function CameraChanges(Date){
+		if(Date-timestart<3000){
+			............
+			............
+		}
+```
+
+### Applicare movimenti di camera
+
+Per quanto riguarda le proprietà position delle coordinate x,y e z ho usato dei coefficenti a,b e c che usavo come misura di spostamento in positivo o in negativo. 
+Quest'ultimi gli ho moltiplicati per dei numeri costanti diversi ogni volta: più grande è il numero costante, più veloce avviene la transizione della camera nella posizione voluta.  
+La proprietà lookAt invece, l'ho usata ad ogni cambiamento di positione della camera in modo da dire alla camera virtuale di puntare sempre nello stesso punto, che in questo caso è l'origine.
+ 
+```javascript
+	var a=0.002,b=0.002,c=0.001;
+```	
+```javascript	
+	camera.position.x += a*24;
+	
+	camera.position.y -= b*40;
+	
+	camera.position.z -= c*100;
+	
+	camera.lookAt( new THREE.Vector3(0,0,0));
+```
+
+Per i cambi totali di inquadratura ho usato sempre gli attributi position, ma ho applicato delle condizioni su una variabile chiamata shots. Questa varabile parte da valore 0, e ad
+ogni cambio di inquadratura totale si incrementa di uno. Dentro alle condizioni riposiziono la camera e incremento shots. 
+ 
+```javascript
+	var shots=0;
+```	
+```javascript	
+	if(shots==0){
+		camera.position.x = -5;
+		camera.position.y = 30;
+		camera.position.z = 30;
+		shots+=1;		
+	}	
+	camera.position.x += a*50;
+	camera.lookAt( new THREE.Vector3(0,0,0));
+```
+
+Dopo aver finito tutti i movimenti/cambi di inquadratura da me voluti, ho usato il software di screen capturing chiamato Ice Screen Recorder per fare il video.
+
+Link per il movie: https://drive.google.com/file/d/0B-TWV3ekwgp7WGoxbW8zdDBleEk/view
