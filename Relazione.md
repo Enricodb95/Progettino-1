@@ -41,6 +41,12 @@ Per realizzare questo progetto ho preso spunto da Minecraft poichè offre ottimi
 Ho riscontrato che la funzione *getHeightData(img)* non sempre ritorna lo stesso risultatato per tutti i pixels dello stesso colore, come si può vedere nelle due immagine soprastanti, nononstante mi sia accertato che siano esattamente della stessa tonalità.
 Controllando anche le variabili con lo strumento di ispezione di Google Chrome ho potuto notare che nel vettore che contiene le tre componenti dei colori che formano la sfumatura, una risulta diversa dalle altre dello stesso colore, inspiegabilmente.
 
+### Test
+All'interno della cartella texture ci sono 4 file .png che si possono utilizzare per testare il codice basta modificare la linea di codice che richiama il file interessato.
+```javascript
+	img.src = "textures/heightmap.png";
+```
+
 ####
 \* per i dettagli implementativi si rimanda al codice allegato
 
