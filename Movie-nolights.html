@@ -1,0 +1,308 @@
+<html>
+	<head>
+		<title>Starting Code for 1st Project 2017</title>
+		<style>
+		
+		body {
+			font-family: Monospace;
+			background-color: #f0f0f0;
+			margin: 0px;
+			overflow: hidden;
+		}
+		
+		canvas { 
+			width: 100%; 
+			height: 100%;
+		}
+	
+		</style>
+		<script src="lib/three.min.js"></script>
+		<script src="lib/stats.min.js"></script>
+		<script src="lib/Coordinates.js"></script>
+		<script src="lib/OrbitControls.js"></script>
+	</head>
+	<body>
+		
+		<script>
+		
+		//Ho preso spunto dal tuo file  aggiungendoci i controlli della camera 
+
+		var scene, camera, renderer, controls, stats;
+
+		function CreateTerrain(width, height, data){
+			var material1 = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load('textures/border.jpg') } );
+			var material2 = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load('textures/border.jpg') } );
+			var material3 = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load('textures/grass.jpg') } );
+			var material4 = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load('textures/dirt.jpg') } );
+			var material5 = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load('textures/border.jpg') } );
+			var material6 = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load('textures/border.jpg') } );
+  
+			var materials = [material1, material2, material3, material4, material5, material6];
+			var meshGrassMaterial = new THREE.MultiMaterial( materials );
+			var meshDirtMaterial = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load('textures/dirt.jpg') } );
+			
+			var geometry = new THREE.CubeGeometry(1,1,1);
+			var cube = new THREE.Mesh(geometry, meshGrassMaterial);
+			var cube2 = new THREE.Mesh(geometry, meshDirtMaterial);
+
+			for ( var i = 0; i < data.length; i ++ ) {
+		        data[i] = Math.round(data[i]/51);
+		    }
+
+			var k=0,c,c2;
+			for(var i = 0; i < height; i++ ){
+				for(var j = 0; j < width; j++ ){
+					c = cube.clone();
+					scene.add( c );
+					c.matrix.makeTranslation ( i, data[k], j );
+					c.matrixAutoUpdate = false;
+					for ( var h = 1; h <= data[k]; h ++ ) {
+				        c2 = cube2.clone();
+						scene.add( c2 );
+						c2.matrix.makeTranslation ( i, data[k]-h, j );
+						c2.matrixAutoUpdate = false;
+				    }
+					
+					k++;
+				}
+			}
+		}
+
+		function Start() {
+			scene = new THREE.Scene();
+			camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+			renderer = new THREE.WebGLRenderer( {antialias: true} );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			renderer.setClearColor( 0xf0f0f0 );
+			document.body.appendChild( renderer.domElement );
+			
+			
+			camera.position.set(0,25,25);
+			camera.lookAt( new THREE.Vector3(0,0,0));			
+
+			// terrain
+			var img = new Image();
+			img.onload = function () {
+				var data = getHeightData(img);
+				//If you want to know the number of the cubes
+				//alert("Num of elements "+data.length);
+				CreateTerrain(img.width, img.height, data);
+
+			}
+			// load img source
+			img.src = "textures/star.png";
+			
+
+			
+			stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.top = '0px';
+			document.body.appendChild( stats.domElement );
+
+			// uncomment if you need to draw coordinate axes when building the scene
+			//Coordinates.drawAllAxes();
+			
+		}
+
+		function getHeightData(img,scale) {
+  
+			if (scale == undefined) scale=1;
+  
+		    var canvas = document.createElement( 'canvas' );
+		    canvas.width = img.width;
+		    canvas.height = img.height;
+		    var context = canvas.getContext( '2d' );
+ 
+		    var size = img.width * img.height;
+			console.log(size);
+		    var data = new Float32Array( size );
+ 
+		    context.drawImage(img,0,0);
+ 
+		    for ( var i = 0; i < size; i ++ ) {
+		        data[i] = 0;
+		    }
+ 
+		    var imgd = context.getImageData(0, 0, img.width, img.height);
+		    var pix = imgd.data;
+ 
+		    var j=0;
+		    for (var i = 0; i < size*4; i += 4) {
+		        var all = pix[i] + pix[i+1] + pix[i+2];  // all is in range 0 - 255*3
+		        data[j] = scale*all/3;
+		        j++;
+		    }
+     
+		    return data;
+		}
+
+
+		//position changing parameters (Uso queste variabili per modificare la camera position moltiplicandole per numeri costanti.)
+		// più alto è il numero, più veloce è lo scorrimento della camera
+
+		// a è per la position x, b è per la position y, e c per la position z
+		var a=0.002,b=0.002,c=0.001;
+		
+		//shots (variabile che mi serve per fare i cambi di inquadratura)
+		//Parte da 0 e ad ogni cambio di inquadratura aumenta di 1. Se non metto questa sta variabile
+		//i cambi di inquadratura non sono possibili
+		var shots=0;
+
+		function CameraChanges(Date){
+
+			//Date è in pratica in tempo della funzione Date.now() che trascorre, timestart è il tempo quando iniziano le animazioni 
+			//generalmente cambio scorrimenti e/o inquadrature ogni 3000 o 6000 millisecondi
+			if(Date-timestart<3000){
+
+				camera.position.x += a*24;
+				camera.lookAt( new THREE.Vector3(0,0,0));
+					
+			}
+
+			if(Date-timestart>=3000 && Date-timestart<6000){
+
+				camera.position.z -= c*100;			
+				camera.lookAt( new THREE.Vector3(0,0,0));
+
+			}
+
+			if(Date-timestart>=6000 && Date-timestart<9000){
+
+					camera.position.y -= b*40;
+					camera.lookAt( new THREE.Vector3(0,0,0));
+				
+			}
+
+			if(Date-timestart>=9000 && Date-timestart<15000){
+
+
+				camera.position.x -= a*45;
+				camera.position.z -= c*100;
+				camera.lookAt( new THREE.Vector3(0,0,0));
+
+			}
+
+			if(Date-timestart>=15000 && Date-timestart<21000){
+
+				//primo cambio inquadratura
+				//faccio con gli if cosi perchè se mettessi subito camera.position += 25*a mi continuerebbe il movimento di camera 
+				//e non riposiziona l'inquadratura 
+				if(shots==0){
+						
+					camera.position.x = -5;
+					camera.position.y = 30;
+					camera.position.z = 30;
+					shots+=1;
+					
+				}
+	
+				camera.position.x += a*50;
+				camera.lookAt( new THREE.Vector3(0,0,0));
+					
+			}
+			
+
+
+			if(Date-timestart>=21000 && Date-timestart<27000){
+				if(shots==1){
+						
+					camera.position.x = 5;
+					camera.position.y = -15;
+					camera.position.z = -15;
+					shots+=1;
+				}			
+			
+				camera.position.x -= a*30;
+				camera.position.y += b*10;
+
+				camera.lookAt( new THREE.Vector3(0,0,0));
+					
+			}
+
+
+			if(Date-timestart>=27000 && Date-timestart<33000){
+					
+				camera.position.z += c*50;
+
+				camera.lookAt( new THREE.Vector3(0,0,0));
+					
+			}
+
+
+			if(Date-timestart>=33000 && Date-timestart<39000){
+				
+				camera.position.y += b*30;	
+				camera.position.z += c*50;
+
+				camera.lookAt( new THREE.Vector3(0,0,0));
+					
+			}
+
+			if(Date-timestart>=39000 && Date-timestart<45000){
+
+				//Qui ho deciso di finire il video con tre inquadrature diverse una dopo l'altra
+				if(Date-timestart>=42000 && Date-timestart<43000 && shots==2){
+
+					camera.position.x = 25;
+					camera.position.y = 0;
+					camera.position.z = 25;
+					shots+=1;
+
+				}else{
+
+					if(Date-timestart>=43000 && Date-timestart<44000 && shots==3){
+						
+						camera.position.x = 0;
+						camera.position.y = 25;
+						camera.position.z = 25;
+						shots+=1;
+
+					}else{
+
+						if(Date-timestart>=44000 && Date-timestart<45000 &&shots==4){
+							
+							camera.position.x = 25;
+							camera.position.y = 25;
+							camera.position.z = 0;
+							shots+=1;	
+						
+						}else{
+
+							camera.position.x += b*80;
+							camera.position.z += c*30;
+						}
+					}
+				}
+				camera.lookAt( new THREE.Vector3(0,0,0));
+			}	
+
+		}
+		
+		function Update() {
+			requestAnimationFrame( Update ); 
+			
+			//Activation of Date.now Function
+			//console.log(Date.now());
+
+			//Funzione dove creo il "movie"
+			CameraChanges(Date.now());
+			
+			stats.update();
+			Render();
+		}
+		
+		function Render() {
+			
+			renderer.render(scene, camera);
+		}
+		
+		//Beginning Time Variable
+		var timestart=Date.now();
+		//console.log(timestart);
+
+		Start();
+		Update();
+			
+		</script>
+	</body>
+</html>
