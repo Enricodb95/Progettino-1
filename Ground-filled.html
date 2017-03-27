@@ -44,8 +44,9 @@
 			var cube2 = new THREE.Mesh(geometry, meshDirtMaterial);
 
 			for ( var i = 0; i < data.length; i ++ ) {
-		        data[i] = Math.round(data[i]/51);
-		    }
+				//if you want different highness you have to cange the numeric value
+		        	data[i] = Math.round(data[i]/51);
+		    	}
 
 			var k=0,c,c2;
 			for(var i = 0; i < height; i++ ){
